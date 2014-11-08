@@ -1,0 +1,22 @@
+{
+  "name": "prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^1.4.13"
+  },
+  "dependencies": {
+    "dom-delegator": "^11.0.0",
+    "rx": "^2.3.14",
+    "vdom-virtualize": "0.0.4",
+    "virtual-dom": "0.0.21",
+    "virtual-hyperscript": "^4.5.0",
+    "lodash": "~2.4.1"
+  }
+}
