@@ -9,12 +9,14 @@ var intentAddTodo$ = new Rx.Subject();
 var intentRemoveTodo$ = new Rx.Subject();
 var intentCompleteTodo$ = new Rx.Subject();
 var intentCompleteAllTodo$ = new Rx.Subject();
+var intentRemoveCompletedTodos$ = new Rx.Subject();
 
 function observe(todosIntent) {
   replicate(todosIntent.addTodo$, intentAddTodo$);
   replicate(todosIntent.removeTodo$, intentRemoveTodo$);
   replicate(todosIntent.completeTodo$, intentCompleteTodo$);
   replicate(todosIntent.completeAllTodo$, intentCompleteAllTodo$);
+  replicate(todosIntent.removeCompletedTodos$, intentRemoveCompletedTodos$);
 }
 
 var todos$ = Rx.Observable.just([
@@ -26,7 +28,7 @@ var todos$ = Rx.Observable.just([
   .merge(intentAddTodo$)
   .merge(intentRemoveTodo$)
   .merge(intentCompleteTodo$)
-  .merge(intentCompleteAllTodo$)
+  .merge(intentRemoveCompletedTodos$)
   .scan(function(todos, intent) {
     switch (intent.operation) {
       case 'add':
@@ -55,6 +57,14 @@ var todos$ = Rx.Observable.just([
       case 'completeAll':
         for (var ii = 0; ii < todos.length; ++ii) {
           todos[ii].completed = intent.completed;
+        }
+        return todos;
+      case 'removeCompleted':
+        for (var ii = 0; ii < todos.length; ++ii) {
+          if (todos[ii].completed) {
+            // splice and remove one from index to correct for it
+            todos.splice(ii--, 1);
+          }
         }
         return todos;
       default:

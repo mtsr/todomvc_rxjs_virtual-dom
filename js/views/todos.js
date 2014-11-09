@@ -10,6 +10,7 @@ var todosInput$ = new Rx.Subject();
 var todoRemoveClick$ = new Rx.Subject();
 var todoCompleteClick$ = new Rx.Subject();
 var todoCompleteAllToggle$ = new Rx.Subject();
+var todoRemoveCompletedClick$ = new Rx.Subject();
 
 function observe(todosModel) {
   replicate(todosModel.todos$, modelTodos$);
@@ -129,7 +130,15 @@ function vrenderFooter(todoModel, completed) {
     //   ])
     // ]),
     // TODO handle click
-    (completed > 0 ? h('button#clear-completed', {}, 'Clear completed (' + completed + ')') : null)
+    (completed > 0 ?
+      h('button#clear-completed', {
+        'ev-click': function(ev) {
+          todoRemoveCompletedClick$.onNext({
+            event: ev
+          });
+        }
+      }, 'Clear completed (' + completed + ')') : null
+    )
   ]);
 }
 
@@ -153,5 +162,6 @@ module.exports = {
   todoRemoveClick$: todoRemoveClick$,
   todoCompleteClick$: todoCompleteClick$,
   todoCompleteAllToggle$: todoCompleteAllToggle$,
+  todoRemoveCompletedClick$: todoRemoveCompletedClick$,
   vtree$: vtree$
 };
