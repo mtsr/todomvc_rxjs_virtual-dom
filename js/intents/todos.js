@@ -6,11 +6,13 @@ var replicate = require('../utils/replicate');
 var todosInput$ = new Rx.Subject();
 var todoRemoveClick$ = new Rx.Subject();
 var todoCompleteClick$ = new Rx.Subject();
+var todoCompleteAllToggle$ = new Rx.Subject();
 
 function observe(todosView) {
   replicate(todosView.todosInput$, todosInput$);
   replicate(todosView.todoRemoveClick$, todoRemoveClick$);
   replicate(todosView.todoCompleteClick$, todoCompleteClick$);
+  replicate(todosView.todoCompleteAllToggle$, todoCompleteAllToggle$);
 }
 
 var addTodo$ = todosInput$.map(function(object) {
@@ -36,9 +38,17 @@ var completeTodo$ = todoCompleteClick$.map(function(object) {
   };
 });
 
+var completeAllTodo$ = todoCompleteAllToggle$.map(function(object) {
+  return {
+    operation: 'completeAll',
+    completed: object.completed
+  };
+});
+
 module.exports = {
   observe: observe,
   addTodo$: addTodo$,
   removeTodo$: removeTodo$,
-  completeTodo$: completeTodo$
+  completeTodo$: completeTodo$,
+  completeAllTodo$: completeAllTodo$
 };

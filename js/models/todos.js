@@ -8,11 +8,13 @@ var _ = require('lodash');
 var intentAddTodo$ = new Rx.Subject();
 var intentRemoveTodo$ = new Rx.Subject();
 var intentCompleteTodo$ = new Rx.Subject();
+var intentCompleteAllTodo$ = new Rx.Subject();
 
 function observe(todosIntent) {
   replicate(todosIntent.addTodo$, intentAddTodo$);
   replicate(todosIntent.removeTodo$, intentRemoveTodo$);
   replicate(todosIntent.completeTodo$, intentCompleteTodo$);
+  replicate(todosIntent.completeAllTodo$, intentCompleteAllTodo$);
 }
 
 var todos$ = Rx.Observable.just([
@@ -24,6 +26,7 @@ var todos$ = Rx.Observable.just([
   .merge(intentAddTodo$)
   .merge(intentRemoveTodo$)
   .merge(intentCompleteTodo$)
+  .merge(intentCompleteAllTodo$)
   .scan(function(todos, intent) {
     switch (intent.operation) {
       case 'add':
@@ -42,17 +45,24 @@ var todos$ = Rx.Observable.just([
       case 'complete':
         for (var ii = 0; ii < todos.length; ++ii) {
           if (todos[ii].id === intent.id) {
-            // TODO need to clone todo because operations need to be side-effect free. Although todos[] is not shared, the todos in it are and mutating them thus is/has sideeffects. Another solution is 'share()', making sure side-effects occur only once.
-            todos[ii] = _.clone(todos[ii]);
+            // // TODO need to clone todo because operations need to be side-effect free. Although todos[] is not shared, the todos in it are and mutating them thus is/has sideeffects. Another solution is 'share()', making sure side-effects occur only once.
+            // todos[ii] = _.clone(todos[ii]);
             todos[ii].completed = !!!todos[ii].completed;
             break;
           }
         }
         return todos;
+      case 'completeAll':
+        for (var ii = 0; ii < todos.length; ++ii) {
+          todos[ii].completed = intent.completed;
+        }
+        return todos;
       default:
         console.error('unrecognized intent');
     }
-  });
+  })
+  // TODO compare as solution with todo-cloning
+  .share();
 
 var completed$ = todos$.map(function(todos) {
   var completed = 0;

@@ -9,6 +9,7 @@ var modelCompleted$ = new Rx.BehaviorSubject(null);
 var todosInput$ = new Rx.Subject();
 var todoRemoveClick$ = new Rx.Subject();
 var todoCompleteClick$ = new Rx.Subject();
+var todoCompleteAllToggle$ = new Rx.Subject();
 
 function observe(todosModel) {
   replicate(todosModel.todos$, modelTodos$);
@@ -47,7 +48,13 @@ function vrenderItems(todoModel) {
   return h('section#main', {}, [
     // TODO handle click
     h('input#toggle-all', {
-      type: 'checkbox'
+      type: 'checkbox',
+      'ev-click': function(ev) {
+        todoCompleteAllToggle$.onNext({
+          event: ev,
+          completed: ev.currentTarget.checked
+        });
+      }
     }, []),
     h('label', {
       htmlFor: 'toggle-all'
@@ -121,16 +128,13 @@ function vrenderFooter(todoModel, completed) {
     //     }, 'Completed')
     //   ])
     // ]),
-    // TODO hide when no completed
     // TODO handle click
-    // TODO completed count
-    h('button#clear-completed', {}, 'Clear completed (' + completed + ')')
+    (completed > 0 ? h('button#clear-completed', {}, 'Clear completed (' + completed + ')') : null)
   ]);
 }
 
 var vtree$ = modelTodos$
-  //.zip(modelCompleted$, 
-  .combineLatest(modelCompleted$,
+  .zip(modelCompleted$,
     function(todoModel, completed) {
       // console.log(arguments);
       return h('div', {}, [vrenderHeader(todoModel)]
@@ -148,5 +152,6 @@ module.exports = {
   todosInput$: todosInput$,
   todoRemoveClick$: todoRemoveClick$,
   todoCompleteClick$: todoCompleteClick$,
+  todoCompleteAllToggle$: todoCompleteAllToggle$,
   vtree$: vtree$
 };
