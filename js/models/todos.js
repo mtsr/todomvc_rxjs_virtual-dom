@@ -29,6 +29,7 @@ var todos$ = Rx.Observable.just([
   .merge(intentRemoveTodo$)
   .merge(intentCompleteTodo$)
   .merge(intentRemoveCompletedTodos$)
+  .merge(intentCompleteAllTodo$)
   .scan(function(todos, intent) {
     switch (intent.operation) {
       case 'add':
