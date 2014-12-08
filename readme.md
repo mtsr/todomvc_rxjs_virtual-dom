@@ -1,9 +1,11 @@
-# Framework Name TodoMVC Example
+# RxJS + VirtualDOM TodoMV based on Model View Intent
 
 > Short description of the framework provided by the official website.
 
-> _[Framework Name - framework.com](link-to-framework)_
-
+> _[Model View Intent](http://futurice.com/blog/reactive-mvc-and-the-virtual-dom)_
+> _[RxJS](https://github.com/Reactive-Extensions/RxJS)_
+> _[RxJS](https://github.com/Matt-Esch/virtual-dom)_
+<!-- 
 
 ## Learning Framework Name
 
@@ -48,3 +50,4 @@ To run the app, spin up an HTTP server and visit http://localhost/.../myexample/
 ## Credit
 
 This TodoMVC application was created by [you]().
+ -->
